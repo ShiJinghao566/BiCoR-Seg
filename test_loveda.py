@@ -1,0 +1,196 @@
+import ttach as tta
+import multiprocessing.pool as mpp
+import multiprocessing as mp
+import time
+from train import *
+import argparse
+from pathlib import Path
+import cv2
+import numpy as np
+import torch
+
+from torch import nn
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+
+
+def label2rgb(mask):
+    h, w = mask.shape[0], mask.shape[1]
+    mask_rgb = np.zeros(shape=(h, w, 3), dtype=np.uint8)
+    mask_convert = mask[np.newaxis, :, :]
+    mask_rgb[np.all(mask_convert == 0, axis=0)] = [255, 255, 255]
+    mask_rgb[np.all(mask_convert == 1, axis=0)] = [255, 0, 0]
+    mask_rgb[np.all(mask_convert == 2, axis=0)] = [255, 255, 0]
+    mask_rgb[np.all(mask_convert == 3, axis=0)] = [0, 0, 255]
+    mask_rgb[np.all(mask_convert == 4, axis=0)] = [159, 129, 183]
+    mask_rgb[np.all(mask_convert == 5, axis=0)] = [0, 255, 0]
+    mask_rgb[np.all(mask_convert == 6, axis=0)] = [255, 195, 128]
+    return mask_rgb
+
+
+def img_writer(inp):
+    (mask,  mask_id, rgb) = inp
+    if rgb:
+        mask_name_tif = mask_id + '.png'
+        mask_tif = label2rgb(mask)
+        mask_tif = cv2.cvtColor(mask_tif, cv2.COLOR_RGB2BGR)
+        cv2.imwrite(mask_name_tif, mask_tif)
+    else:
+        mask_png = mask.astype(np.uint8)
+        mask_name_png = mask_id + '.png'
+        cv2.imwrite(mask_name_png, mask_png)
+
+
+def get_args():
+    parser = argparse.ArgumentParser()
+    arg = parser.add_argument
+    arg("-c", "--config_path", type=Path, required=True, help="Path to  config")
+    arg("-o", "--output_path", type=Path, help="Path where to save resulting masks.", required=True)
+    arg("-t", "--tta", help="Test time augmentation.", default=None, choices=[None, "d4", "lr"]) ## lr is flip TTA, d4 is multi-scale TTA
+    arg("--rgb", help="whether output rgb masks", action='store_true')
+    arg("--val", help="whether eval validation set", action='store_true')
+    return parser.parse_args()
+
+
+def main():
+    args = get_args()
+    config = py2cfg(args.config_path)
+    args.output_path.mkdir(exist_ok=True, parents=True)
+
+    # ====== 模型加载 ======
+    model = Supervision_Train.load_from_checkpoint(
+        os.path.join(config.weights_path, config.test_weights_name + '.ckpt'),
+        config=config,
+        map_location=f"cuda:{config.gpus[0]}"
+    )
+    model = model.to(f'cuda:{config.gpus[0]}')
+    model.eval()
+
+    # ====== TTA ======
+    if args.tta == "lr":
+        transforms = tta.Compose(
+            [
+                tta.HorizontalFlip(),
+                tta.VerticalFlip()
+            ]
+        )
+        model = tta.SegmentationTTAWrapper(model, transforms)
+    elif args.tta == "d4":
+        transforms = tta.Compose(
+            [
+                tta.HorizontalFlip(),
+                # tta.VerticalFlip(),
+                # tta.Rotate90(angles=[0, 90, 180, 270]),
+                tta.Scale(scales=[0.75, 1.0, 1.25, 1.5], interpolation='bicubic', align_corners=False),
+                # tta.Multiply(factors=[0.8, 1, 1.2])
+            ]
+        )
+        model = tta.SegmentationTTAWrapper(model, transforms)
+
+    # ====== 数据集 / 验证器 ======
+    test_dataset = config.test_dataset
+    if args.val:
+        evaluator = Evaluator(num_class=config.num_classes)
+        evaluator.reset()
+        test_dataset = config.val_dataset
+
+    # ====== DataLoader ======
+    with torch.no_grad():
+        test_loader = DataLoader(
+            test_dataset,
+            batch_size=3,
+            num_workers=4,
+            pin_memory=True,
+            drop_last=False,
+        )
+
+        results = []
+        total_images = 0
+
+        # ====== 计时（推理）======
+        torch.cuda.synchronize()
+        infer_start = time.time()
+
+        pbar = tqdm(test_loader)
+        for input in pbar:
+            # 前向
+            raw_predictions = model(input['img'].to(f'cuda:{config.gpus[0]}'))
+
+            image_ids = input["img_id"]
+            if args.val:
+                masks_true = input['gt_semantic_seg']
+
+            img_type = input['img_type']
+
+            # 后处理（softmax 与 argmax）
+            raw_predictions = nn.Softmax(dim=1)(raw_predictions)
+            predictions = raw_predictions.argmax(dim=1)
+
+            # 收集结果、评估
+            bs = raw_predictions.shape[0]
+            for i in range(bs):
+                mask = predictions[i].cpu().numpy()
+                mask_name = image_ids[i]
+                mask_t = img_type[i]
+                if args.val:
+                    out_dir = os.path.join(args.output_path, mask_t)
+                    if not os.path.exists(out_dir):
+                        os.mkdir(out_dir)
+                    evaluator.add_batch(pre_image=mask, gt_image=masks_true[i].cpu().numpy())
+                    results.append((mask, str(Path(out_dir) / mask_name), args.rgb))
+                else:
+                    results.append((mask, str(args.output_path / mask_name), args.rgb))
+
+            # ====== 实时统计 ======
+            total_images += bs
+            torch.cuda.synchronize()
+            elapsed = time.time() - infer_start
+            # 避免除零
+            if elapsed > 0 and total_images > 0:
+                fps = total_images / elapsed
+                sec_per_img = elapsed / total_images
+                pbar.set_postfix({"FPS": f"{fps:.2f}", "sec/img": f"{sec_per_img:.4f}"})
+            else:
+                pbar.set_postfix({"FPS": "NA", "sec/img": "NA"})
+
+        # ====== 推理统计总结 ======
+        torch.cuda.synchronize()
+        infer_end = time.time()
+        infer_time = infer_end - infer_start
+        avg_sec_per_img = infer_time / max(1, total_images)
+        avg_fps = total_images / infer_time if infer_time > 0 else float('inf')
+
+        print(f"\n========== 推理统计 ==========")
+        print(f"样本数: {total_images}")
+        print(f"推理总耗时: {infer_time:.3f} s")
+        print(f"平均秒/张: {avg_sec_per_img:.6f} s/img")
+        print(f"平均FPS: {avg_fps:.3f} img/s")
+
+        # ====== 验证指标（若启用）=====
+        if args.val:
+            iou_per_class = evaluator.Intersection_over_Union()
+            f1_per_class = evaluator.F1()
+            OA = evaluator.OA()
+            for class_name, class_iou, class_f1 in zip(config.classes, iou_per_class, f1_per_class):
+                print('F1_{}:{}, IOU_{}:{}'.format(class_name, class_f1, class_name, class_iou))
+            print('F1:{}, mIOU:{}, OA:{}'.format(np.nanmean(f1_per_class), np.nanmean(iou_per_class), OA))
+
+    # ====== 写图（并行）======
+    t0 = time.time()
+    mpp.Pool(processes=mp.cpu_count()).map(img_writer, results)
+    t1 = time.time()
+    img_write_time = t1 - t0
+    print(f'images writing spends: {img_write_time:.3f} s')
+
+    # ====== 端到端（推理+写图）======
+    e2e_time = infer_time + img_write_time
+    print(f'========== 总结（End-to-End）==========')
+    print(f'端到端总耗时（推理+写图）: {e2e_time:.3f} s')
+    print(f'端到端平均秒/张: {(e2e_time / max(1, total_images)):.6f} s/img')
+    print(f'端到端平均FPS: {(total_images / e2e_time if e2e_time > 0 else float("inf")):.3f} img/s')
+
+
+
+
+if __name__ == "__main__":
+    main()
