@@ -138,7 +138,8 @@ They reveal category activation and spatial attention learned during the bidirec
 
 ## 💬 Acknowledgement
 
-This code is built upon [GeoSeg](https://github.com/WangLibo1995/GeoSeg) and [SFA-Net](https://github.com/j2jeong/SFA-Net).  
+This code is built upon [GeoSeg](https://github.com/WangLibo1995/GeoSeg).  
 We sincerely thank the open-source community for their contributions.
 
 ---
+
