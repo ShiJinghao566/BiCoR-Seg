@@ -1,7 +1,7 @@
 from torch.utils.data import DataLoader
 from network.losses import *
 from network.datasets.potsdam_dataset import *
-from network.models.bicornet import BiCoRSegModel
+from network.models.bicor import BiCoRSegModel
 from catalyst.contrib.nn import Lookahead
 from catalyst import utils
 import torch
