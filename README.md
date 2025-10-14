@@ -125,6 +125,17 @@ It introduces a heatmap-driven bidirectional synergy between feature and class e
 
 ---
 
+## 🔥 Heatmap Visualization
+
+<p align="center">
+  <img src="/images/5.pdf" width="90%">
+</p>
+
+**Figure 3.** Visualization of hierarchical class heatmaps from BiCoR-Seg.  
+They reveal category activation and spatial attention learned during the bidirectional refinement process.
+
+---
+
 ## 💬 Acknowledgement
 
 This code is built upon [GeoSeg](https://github.com/WangLibo1995/GeoSeg) and [SFA-Net](https://github.com/j2jeong/SFA-Net).  
