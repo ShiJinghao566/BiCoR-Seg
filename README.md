@@ -4,7 +4,8 @@
 
 **Bidirectional Co-Refinement Framework for High-Resolution Remote Sensing Image Segmentation**
 
-![framework](images/1.svg) ![HBIS module](images/2.svg)
+![framework](images/1.svg)
+![HBIS module](images/2.svg)
 
 </div>
 
@@ -23,7 +24,7 @@ pip install -r requirements.txt
 
 ## 🗂 Prepare Data
 
-Prepare the following folders to organize this repo (same as [SFA-Net](https://github.com/j2jeong/SFA-Net) or [GeoSeg](https://github.com/WangLibo1995/GeoSeg)):
+Prepare the following folders to organize this repo (same as [GeoSeg](https://github.com/WangLibo1995/GeoSeg)):
 
 ```none
 BiCoR
@@ -109,22 +110,30 @@ python test_loveda.py -c config/loveda/bicor.py -o fig_results/loveda/bicor --rg
 
 ## 🖼 Framework Overview
 
-<p align="center"> <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQ2OSIgaGVpZ2h0PSIxNTE4IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWw6c3BhY2U9InByZXNlcnZlIiBvdmVyZmxvdz0iaGlkZGVuIj48" width="90%"> </p>
+<p align="center">
+  <img src="images/1.svg" width="90%">
+</p>
 
 **Figure 1.** The overall framework of BiCoR-Seg.  
 It introduces a heatmap-driven bidirectional synergy between feature and class embedding spaces.
 
-<p align="center"> <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzMyOCIgaGVpZ2h0PSIyMDM3IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWw6c3BhY2U9InByZXNlcnZlIiBvdmVyZmxvdz0iaGlkZGVuIj48" width="80%"> </p>
+<p align="center">
+  <img src="images/2.svg" width="80%">
+</p>
+
 **Figure 2.** The HBIS module structure, showing the Feature-to-Class (F2CE) and Class-to-Feature (CE2F) bidirectional refinement process.
 
 ---
 
 ## 🔥 Heatmap Visualization
 
-<p align="center"> <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjc3NyIgaGVpZ2h0PSIxODE4IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWw6c3BhY2U9InByZXNlcnZlIiBvdmVyZmxvdz0iaGlkZGVuIj48" width="90%"> </p>
+<p align="center">
+  <img src="images/5.svg" width="90%">
+</p>
 
 **Figure 3.** Visualization of hierarchical class heatmaps from BiCoR-Seg.  
 They reveal category activation and spatial attention learned during the bidirectional refinement process.
+
 ---
 
 ## 💬 Acknowledgement
@@ -133,7 +142,3 @@ This code is built upon [GeoSeg](https://github.com/WangLibo1995/GeoSeg).
 We sincerely thank the open-source community for their contributions.
 
 ---
-
-
-
-
