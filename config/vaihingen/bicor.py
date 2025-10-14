@@ -7,7 +7,6 @@ from catalyst import utils
 import torch
 import numpy as np
 import albumentations as albu
-from dataset_augmentations import Compose, RandomScale, SmartCropV1
 
 max_epoch = 45
 ignore_index = len(CLASSES)
