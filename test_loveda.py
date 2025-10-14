@@ -29,7 +29,7 @@ def label2rgb(mask):
 
 
 def img_writer(inp):
-    (mask,  mask_id, rgb) = inp
+    (mask, mask_id, rgb) = inp
     if rgb:
         mask_name_tif = mask_id + '.png'
         mask_tif = label2rgb(mask)
@@ -46,7 +46,7 @@ def get_args():
     arg = parser.add_argument
     arg("-c", "--config_path", type=Path, required=True, help="Path to  config")
     arg("-o", "--output_path", type=Path, help="Path where to save resulting masks.", required=True)
-    arg("-t", "--tta", help="Test time augmentation.", default=None, choices=[None, "d4", "lr"]) ## lr is flip TTA, d4 is multi-scale TTA
+    arg("-t", "--tta", help="Test time augmentation.", default=None, choices=[None, "d4", "lr"])
     arg("--rgb", help="whether output rgb masks", action='store_true')
     arg("--val", help="whether eval validation set", action='store_true')
     return parser.parse_args()
@@ -57,7 +57,6 @@ def main():
     config = py2cfg(args.config_path)
     args.output_path.mkdir(exist_ok=True, parents=True)
 
-    # ====== 模型加载 ======
     model = Supervision_Train.load_from_checkpoint(
         os.path.join(config.weights_path, config.test_weights_name + '.ckpt'),
         config=config,
@@ -66,7 +65,6 @@ def main():
     model = model.to(f'cuda:{config.gpus[0]}')
     model.eval()
 
-    # ====== TTA ======
     if args.tta == "lr":
         transforms = tta.Compose(
             [
@@ -79,22 +77,17 @@ def main():
         transforms = tta.Compose(
             [
                 tta.HorizontalFlip(),
-                # tta.VerticalFlip(),
-                # tta.Rotate90(angles=[0, 90, 180, 270]),
                 tta.Scale(scales=[0.75, 1.0, 1.25, 1.5], interpolation='bicubic', align_corners=False),
-                # tta.Multiply(factors=[0.8, 1, 1.2])
             ]
         )
         model = tta.SegmentationTTAWrapper(model, transforms)
 
-    # ====== 数据集 / 验证器 ======
     test_dataset = config.test_dataset
     if args.val:
         evaluator = Evaluator(num_class=config.num_classes)
         evaluator.reset()
         test_dataset = config.val_dataset
 
-    # ====== DataLoader ======
     with torch.no_grad():
         test_loader = DataLoader(
             test_dataset,
@@ -107,13 +100,11 @@ def main():
         results = []
         total_images = 0
 
-        # ====== 计时（推理）======
         torch.cuda.synchronize()
         infer_start = time.time()
 
         pbar = tqdm(test_loader)
         for input in pbar:
-            # 前向
             raw_predictions = model(input['img'].to(f'cuda:{config.gpus[0]}'))
 
             image_ids = input["img_id"]
@@ -122,11 +113,9 @@ def main():
 
             img_type = input['img_type']
 
-            # 后处理（softmax 与 argmax）
             raw_predictions = nn.Softmax(dim=1)(raw_predictions)
             predictions = raw_predictions.argmax(dim=1)
 
-            # 收集结果、评估
             bs = raw_predictions.shape[0]
             for i in range(bs):
                 mask = predictions[i].cpu().numpy()
@@ -141,11 +130,9 @@ def main():
                 else:
                     results.append((mask, str(args.output_path / mask_name), args.rgb))
 
-            # ====== 实时统计 ======
             total_images += bs
             torch.cuda.synchronize()
             elapsed = time.time() - infer_start
-            # 避免除零
             if elapsed > 0 and total_images > 0:
                 fps = total_images / elapsed
                 sec_per_img = elapsed / total_images
@@ -153,20 +140,18 @@ def main():
             else:
                 pbar.set_postfix({"FPS": "NA", "sec/img": "NA"})
 
-        # ====== 推理统计总结 ======
         torch.cuda.synchronize()
         infer_end = time.time()
         infer_time = infer_end - infer_start
         avg_sec_per_img = infer_time / max(1, total_images)
         avg_fps = total_images / infer_time if infer_time > 0 else float('inf')
 
-        print(f"\n========== 推理统计 ==========")
-        print(f"样本数: {total_images}")
-        print(f"推理总耗时: {infer_time:.3f} s")
-        print(f"平均秒/张: {avg_sec_per_img:.6f} s/img")
-        print(f"平均FPS: {avg_fps:.3f} img/s")
+        print(f"\n========== Inference Statistics ==========")
+        print(f"Samples: {total_images}")
+        print(f"Total inference time: {infer_time:.3f} s")
+        print(f"Average seconds per image: {avg_sec_per_img:.6f} s/img")
+        print(f"Average FPS: {avg_fps:.3f} img/s")
 
-        # ====== 验证指标（若启用）=====
         if args.val:
             iou_per_class = evaluator.Intersection_over_Union()
             f1_per_class = evaluator.F1()
@@ -175,21 +160,17 @@ def main():
                 print('F1_{}:{}, IOU_{}:{}'.format(class_name, class_f1, class_name, class_iou))
             print('F1:{}, mIOU:{}, OA:{}'.format(np.nanmean(f1_per_class), np.nanmean(iou_per_class), OA))
 
-    # ====== 写图（并行）======
     t0 = time.time()
     mpp.Pool(processes=mp.cpu_count()).map(img_writer, results)
     t1 = time.time()
     img_write_time = t1 - t0
-    print(f'images writing spends: {img_write_time:.3f} s')
+    print(f'Image writing time: {img_write_time:.3f} s')
 
-    # ====== 端到端（推理+写图）======
     e2e_time = infer_time + img_write_time
-    print(f'========== 总结（End-to-End）==========')
-    print(f'端到端总耗时（推理+写图）: {e2e_time:.3f} s')
-    print(f'端到端平均秒/张: {(e2e_time / max(1, total_images)):.6f} s/img')
-    print(f'端到端平均FPS: {(total_images / e2e_time if e2e_time > 0 else float("inf")):.3f} img/s')
-
-
+    print(f'========== Summary (End-to-End) ==========')
+    print(f'Total End-to-End time (Inference + Writing): {e2e_time:.3f} s')
+    print(f'Average seconds per image (End-to-End): {(e2e_time / max(1, total_images)):.6f} s/img')
+    print(f'Average FPS (End-to-End): {(total_images / e2e_time if e2e_time > 0 else float("inf")):.3f} img/s')
 
 
 if __name__ == "__main__":
