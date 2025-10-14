@@ -4,8 +4,8 @@
 
 **Bidirectional Co-Refinement Framework for High-Resolution Remote Sensing Image Segmentation**
 
-![framework](/images/1.pdf)
-![HBIS module](/images/2.pdf)
+![framework](/images/1.svg)
+![HBIS module](/images/2.svg)
 
 </div>
 
@@ -111,14 +111,14 @@ python test_loveda.py -c config/loveda/bicor.py -o fig_results/loveda/bicor --rg
 ## 🖼 Framework Overview
 
 <p align="center">
-  <img src="/images/1.pdf" width="90%">
+  <img src="/images/1.svg" width="90%">
 </p>
 
 **Figure 1.** The overall framework of BiCoR-Seg.  
 It introduces a heatmap-driven bidirectional synergy between feature and class embedding spaces.
 
 <p align="center">
-  <img src="/images/2.pdf" width="80%">
+  <img src="/images/2.svg" width="80%">
 </p>
 
 **Figure 2.** The HBIS module structure, showing the Feature-to-Class (F2CE) and Class-to-Feature (CE2F) bidirectional refinement process.
@@ -128,7 +128,7 @@ It introduces a heatmap-driven bidirectional synergy between feature and class e
 ## 🔥 Heatmap Visualization
 
 <p align="center">
-  <img src="/images/5.pdf" width="90%">
+  <img src="/images/5.svg" width="90%">
 </p>
 
 **Figure 3.** Visualization of hierarchical class heatmaps from BiCoR-Seg.  
