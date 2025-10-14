@@ -50,8 +50,8 @@ BiCoR
 ## 🧭 Data Preprocessing
 
 ### 📦 Download Datasets
-- [ISPRS Vaihingen, Potsdam](https://www.isprs.org/education/benchmarks/UrbanSemLab/default.aspx)
 - [LoveDA](https://codalab.lisn.upsaclay.fr/competitions/421)
+- [ISPRS Vaihingen, Potsdam](https://www.isprs.org/education/benchmarks/UrbanSemLab/default.aspx)
 
 ---
 
@@ -145,6 +145,7 @@ This code is built upon [GeoSeg](https://github.com/WangLibo1995/GeoSeg).
 We sincerely thank the open-source community for their contributions.
 
 ---
+
 
 
 
