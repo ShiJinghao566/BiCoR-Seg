@@ -116,14 +116,14 @@ python test_loveda.py -c config/loveda/bicor.py -o fig_results/loveda/bicor --rg
 ## 🖼 Framework Overview
 
 <p align="center">
-  <img src="images/1.svg" width="90%">
+  <img src="images/1.svg" width="45%">
 </p>
 
 **Figure 1.** The overall framework of BiCoR-Seg.  
 It introduces a heatmap-driven bidirectional synergy between feature and class embedding spaces.
 
 <p align="center">
-  <img src="images/2.svg" width="80%">
+  <img src="images/2.svg" width="40%">
 </p>
 
 **Figure 2.** The HBIS module structure, showing the Feature-to-Class (F2CE) and Class-to-Feature (CE2F) bidirectional refinement process.
@@ -133,7 +133,7 @@ It introduces a heatmap-driven bidirectional synergy between feature and class e
 ## 🔥 Heatmap Visualization
 
 <p align="center">
-  <img src="images/5.svg" width="90%">
+  <img src="images/5.svg" width="45%">
 </p>
 
 **Figure 3.** Visualization of hierarchical class heatmaps from BiCoR-Seg.  
@@ -147,4 +147,5 @@ This code is built upon [GeoSeg](https://github.com/WangLibo1995/GeoSeg).
 We sincerely thank the open-source community for their contributions.
 
 ---
+
 
