@@ -5,7 +5,7 @@
 **Bidirectional Co-Refinement Framework for High-Resolution Remote Sensing Image Segmentation**
 
 <p align="center">
-  <img src="images/1.svg" width="50%">
+  <img src="images/1.svg" width="40%">
 </p>
 
 <p align="center">
@@ -147,5 +147,6 @@ This code is built upon [GeoSeg](https://github.com/WangLibo1995/GeoSeg).
 We sincerely thank the open-source community for their contributions.
 
 ---
+
 
 
