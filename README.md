@@ -1,68 +1,133 @@
-BiCoR
+<div align="center">
 
-Installation
-------------
+# BiCoR-Seg
+
+**Bidirectional Co-Refinement Framework for High-Resolution Remote Sensing Image Segmentation**
+
+![framework](/images/1.pdf)
+![HBIS module](/images/2.pdf)
+
+</div>
+
+---
+
+## 🔧 Install
+
+```bash
 conda create -n bicor python=3.8
 conda activate bicor
 conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge
 pip install -r requirements.txt
+```
 
+---
 
-Dataset Preparation
--------------------
-Organize the repository as follows:
+## 🗂 Prepare Data
 
+Prepare the following folders to organize this repo (same as [SFA-Net](https://github.com/j2jeong/SFA-Net) or [GeoSeg](https://github.com/WangLibo1995/GeoSeg)):
+
+```none
 BiCoR
 ├── network
 ├── config
 ├── tools
-├── model_weights
-├── fig_results
-├── lightning_logs
+├── model_weights          (save the model weights)
+├── fig_results            (save the masks predicted)
+├── lightning_logs         (CSV format training logs)
 ├── data
 │   ├── LoveDA
-│   ├── vaihingen
 │   ├── potsdam
+│   ├── vaihingen
+```
 
-Download datasets:
-- LoveDA: https://codalab.lisn.upsaclay.fr/competitions/421
-- ISPRS Vaihingen & Potsdam: https://www.isprs.org/education/benchmarks/UrbanSemLab/default.aspx
+---
 
+## 🧭 Data Preprocessing
 
-Data Preprocessing
-------------------
-**Vaihingen**
+### 📦 Download Datasets
+- [ISPRS Vaihingen, Potsdam](https://www.isprs.org/education/benchmarks/UrbanSemLab/default.aspx)
+- [LoveDA](https://codalab.lisn.upsaclay.fr/competitions/421)
+
+Follow the preprocessing scripts as below (same as D2LS, all `d2ls` replaced by `bicor`):
+
+---
+
+### Vaihingen
+```bash
 python tools/vaihingen_patch_split.py --img-dir "data/vaihingen/train_images" --mask-dir "data/vaihingen/train_masks" --output-img-dir "data/vaihingen/train/images_1024" --output-mask-dir "data/vaihingen/train/masks_1024" --mode "train" --split-size 1024 --stride 512
+```
 
-python tools/vaihingen_patch_split.py --img-dir "data/vaihingen/test_images" --mask-dir "data/vaihingen/test_masks_eroded" --output-img-dir "data/vaihingen/test/images_1024" --output-mask-dir "data/vaihingen/test/masks_1024" --mode "val" --split-size 1024 --stride 1024 --eroded
+---
 
-python tools/vaihingen_patch_split.py --img-dir "data/vaihingen/test_images" --mask-dir "data/vaihingen/test_masks" --output-img-dir "data/vaihingen/test/images_1024" --output-mask-dir "data/vaihingen/test/masks_1024_rgb" --mode "val" --split-size 1024 --stride 1024 --gt
-
-
-**Potsdam**
+### Potsdam
+```bash
 python tools/potsdam_patch_split.py --img-dir "data/potsdam/train_images" --mask-dir "data/potsdam/train_masks" --output-img-dir "data/potsdam/train/images_1024" --output-mask-dir "data/potsdam/train/masks_1024" --mode "train" --split-size 1024 --stride 1024 --rgb-image
+```
 
-python tools/potsdam_patch_split.py --img-dir "data/potsdam/test_images" --mask-dir "data/potsdam/test_masks_eroded" --output-img-dir "data/potsdam/test/images_1024" --output-mask-dir "data/potsdam/test/masks_1024" --mode "val" --split-size 1024 --stride 1024 --eroded --rgb-image
+---
 
-python tools/potsdam_patch_split.py --img-dir "data/potsdam/test_images" --mask-dir "data/potsdam/test_masks" --output-img-dir "data/potsdam/test/images_1024" --output-mask-dir "data/potsdam/test/masks_1024_rgb" --mode "val" --split-size 1024 --stride 1024 --gt --rgb-image
-
-
-**LoveDA**
+### LoveDA
+```bash
 python tools/loveda_mask_convert.py --mask-dir data/LoveDA/Train/Rural/masks_png --output-mask-dir data/LoveDA/Train/Rural/masks_png_convert
-python tools/loveda_mask_convert.py --mask-dir data/LoveDA/Train/Urban/masks_png --output-mask-dir data/LoveDA/Train/Urban/masks_png_convert
-python tools/loveda_mask_convert.py --mask-dir data/LoveDA/Val/Rural/masks_png --output-mask-dir data/LoveDA/Val/Rural/masks_png_convert
-python tools/loveda_mask_convert.py --mask-dir data/LoveDA/Val/Urban/masks_png --output-mask-dir data/LoveDA/Val/Urban/masks_png_convert
+```
 
+---
 
-Training
---------
+## 🧩 Training
+
+`-c` denotes the path of the config file.  
+Use different configs to train on different datasets.
+
+```bash
 python train.py -c config/loveda/bicor.py
-python train.py -c config/vaihingen/bicor.py
-python train.py -c config/potsdam/bicor.py
+```
 
+---
 
-Testing
--------
+## 🧪 Testing
+
+`-c` = config path  
+`-o` = output path  
+`-t` = test time augmentation (TTA), can be `[None, 'lr', 'd4']`  
+`--rgb` = output RGB masks
+
+### Vaihingen
+```bash
 python test_vaihingen.py -c config/vaihingen/bicor.py -o fig_results/vaihingen/bicor --rgb -t 'd4'
+```
+
+### Potsdam
+```bash
 python test_potsdam.py -c config/potsdam/bicor.py -o fig_results/potsdam/bicor --rgb -t 'lr'
+```
+
+### LoveDA ([Online Testing](https://codalab.lisn.upsaclay.fr/competitions/421))
+```bash
 python test_loveda.py -c config/loveda/bicor.py -o fig_results/loveda/bicor --rgb -t "d4"
+```
+
+---
+
+## 🖼 Framework Overview
+
+<p align="center">
+  <img src="/images/1.pdf" width="90%">
+</p>
+
+**Figure 1.** The overall framework of BiCoR-Seg.  
+It introduces a heatmap-driven bidirectional synergy between feature and class embedding spaces.
+
+<p align="center">
+  <img src="/images/2.pdf" width="80%">
+</p>
+
+**Figure 2.** The HBIS module structure, showing the Feature-to-Class (F2CE) and Class-to-Feature (CE2F) bidirectional refinement process.
+
+---
+
+## 💬 Acknowledgement
+
+This code is built upon [GeoSeg](https://github.com/WangLibo1995/GeoSeg) and [SFA-Net](https://github.com/j2jeong/SFA-Net).  
+We sincerely thank the open-source community for their contributions.
+
+---
