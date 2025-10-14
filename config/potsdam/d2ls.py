@@ -1,11 +1,10 @@
-# ===================== Imports =====================
 from torch.utils.data import DataLoader
 from network.losses import *
 from network.datasets.potsdam_dataset import *
-from network.models.d2ls import DynamicDictionaryLearning
+from network.models.bicornet import BiCoRSegModel
 from catalyst.contrib.nn import Lookahead
 from catalyst import utils
-import torch 
+import torch
 
 max_epoch = 45
 ignore_index = len(CLASSES)
@@ -22,26 +21,25 @@ classes = CLASSES
 test_time_aug = 'd4'
 output_mask_dir, output_mask_rgb_dir = None, None
 
-# ===== Weights / Logging / Runtime =====
-weights_name = "d2ls"
+weights_name = "bicor"
 weights_path = "checkpoints/potsdam/{}".format(weights_name)
-test_weights_name = "d2ls-v1"
+test_weights_name = "bicor-v1"
 log_name = 'potsdam/{}'.format(weights_name)
 monitor = 'val_F1'
 monitor_mode = 'max'
 save_top_k = 8
 save_last = True
 check_val_every_n_epoch = 1
-pretrained_ckpt_path = None  
-gpus = [0] 
-resume_ckpt_path = None 
+pretrained_ckpt_path = None
+gpus = [0]
+resume_ckpt_path = None
 strategy = None
-net = DynamicDictionaryLearning(
+
+net = BiCoRSegModel(
     model="convnext_base",
     token_length=token_length,
     l=3,
 )
-
 
 loss = UnetFormerLoss(ignore_index=ignore_index)
 use_aux_loss = True
@@ -51,12 +49,13 @@ use_heatmap_deep = True
 heatmap_beta = [1, 1, 1]
 lambda_heatmap = 0.1
 fdl_loss = None
-use_fdl_final = False    
-use_fdl_multi = True     
+use_fdl_final = False
+use_fdl_multi = True
 lambda_fdl_final = 1.0
 lambda_fdl_multi = 0.1
-fdl_alpha = [1, 1, 1]     
+fdl_alpha = [1, 1, 1]
 fdl_eps = 1e-6
+
 train_dataset = PotsdamDataset(
     data_root='data/potsdam/train',
     mode='train',
@@ -68,6 +67,7 @@ test_dataset = PotsdamDataset(
     data_root='data/potsdam/test',
     transform=test_aug
 )
+
 train_loader = DataLoader(
     dataset=train_dataset,
     batch_size=train_batch_size,
@@ -84,6 +84,7 @@ val_loader = DataLoader(
     pin_memory=True,
     drop_last=False
 )
+
 base_optimizer = torch.optim.AdamW(net.parameters(), lr=lr, weight_decay=weight_decay)
 optimizer = Lookahead(base_optimizer)
 lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
