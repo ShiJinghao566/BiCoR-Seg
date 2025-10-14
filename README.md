@@ -53,8 +53,6 @@ BiCoR
 - [ISPRS Vaihingen, Potsdam](https://www.isprs.org/education/benchmarks/UrbanSemLab/default.aspx)
 - [LoveDA](https://codalab.lisn.upsaclay.fr/competitions/421)
 
-Follow the preprocessing scripts as below (same as D2LS, all `d2ls` replaced by `bicor`):
-
 ---
 
 ### Vaihingen
@@ -147,6 +145,7 @@ This code is built upon [GeoSeg](https://github.com/WangLibo1995/GeoSeg).
 We sincerely thank the open-source community for their contributions.
 
 ---
+
 
 
 
