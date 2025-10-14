@@ -4,8 +4,13 @@
 
 **Bidirectional Co-Refinement Framework for High-Resolution Remote Sensing Image Segmentation**
 
-![framework](images/1.svg)
-![HBIS module](images/2.svg)
+<p align="center">
+  <img src="images/1.svg" width="50%">
+</p>
+
+<p align="center">
+  <img src="images/2.svg" width="40%">
+</p>
 
 </div>
 
@@ -142,3 +147,4 @@ This code is built upon [GeoSeg](https://github.com/WangLibo1995/GeoSeg).
 We sincerely thank the open-source community for their contributions.
 
 ---
+
