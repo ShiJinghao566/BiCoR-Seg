@@ -1,6 +1,35 @@
 <div align="center">
 
+<p align="center">
+  <img src="images/0.png" width="40%">
+</p>
+
 # BiCoR-Seg
+
+📢 **This paper has been accepted by CVM 2026!**
+
+**Bidirectional Co-Refinement Framework for High-Resolution Remote Sensing Image Segmentation**
+
+<p align="center">
+  <img src="images/1.svg" width="40%">
+</p>
+
+<p align="center">
+  <img src="images/2.svg" width="40%">
+</p>
+
+</div>
+
+---
+
+## 🔧 Install
+
+```bash
+conda create -n bicor python=3.8
+conda activate bicor
+conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge
+pip install -r requirements.txt
+
 
 **Bidirectional Co-Refinement Framework for High-Resolution Remote Sensing Image Segmentation**
 
@@ -145,6 +174,7 @@ This code is built upon [GeoSeg](https://github.com/WangLibo1995/GeoSeg).
 We sincerely thank the open-source community for their contributions.
 
 ---
+
 
 
 
