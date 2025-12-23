@@ -1,7 +1,7 @@
 <div align="center">
 
 <p align="center">
-  <img src="images/0.png" width="40%">
+  <img src="images/00.png" width="20%">
 </p>
 
 # BiCoR-Seg
@@ -174,6 +174,7 @@ This code is built upon [GeoSeg](https://github.com/WangLibo1995/GeoSeg).
 We sincerely thank the open-source community for their contributions.
 
 ---
+
 
 
 
