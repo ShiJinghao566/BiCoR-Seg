@@ -173,13 +173,9 @@ They reveal category activation and spatial attention learned during the bidirec
 This code is built upon [GeoSeg](https://github.com/WangLibo1995/GeoSeg).  
 We sincerely thank the open-source community for their contributions.  
 I am grateful to Li Xiaoyue from Chengdu University of Technology for her support and help.  
-Qian Yahui, you big dummy, never mind—may Qian Yahui live a hundred years!——There's a Qian Yahui by the edge of the clouds.  
-Wishing He Kunliang and his girlfriend happiness！  
-Zhao Simo should be happy every day and may all your wishes come true.  
-I want to knead myself into a soft cloud~
-
 
 ---
+
 
 
 
