@@ -12,9 +12,6 @@
   <a href="https://arxiv.org/abs/2512.20255">
     <img src="https://img.shields.io/badge/arXiv-2512.20255-b31b1b.svg" alt="arXiv">
   </a>
-  <a href="#">
-    <img src="https://img.shields.io/badge/CVM-2026-blue.svg" alt="CVM 2026">
-  </a>
 </p>
 
 
@@ -199,6 +196,7 @@ We sincerely thank the open-source community for their contributions.
 I am grateful to Li Xiaoyue from Chengdu University of Technology for her support and help.  
 
 ---
+
 
 
 
