@@ -176,8 +176,6 @@ They reveal category activation and spatial attention learned during the bidirec
 ---
 ## 📖 Citation
 
-**BiCoR-Seg: Bidirectional Co-Refinement Framework for High-Resolution Remote Sensing Image Segmentation**
-
 If you find this work useful, please consider citing:
 
 ```bibtex
@@ -196,6 +194,7 @@ We sincerely thank the open-source community for their contributions.
 I am grateful to Li Xiaoyue from Chengdu University of Technology for her support and help.  
 
 ---
+
 
 
 
