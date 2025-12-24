@@ -37,30 +37,6 @@ conda activate bicor
 conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge
 pip install -r requirements.txt
 
-
-**Bidirectional Co-Refinement Framework for High-Resolution Remote Sensing Image Segmentation**
-
-<p align="center">
-  <img src="images/1.svg" width="40%">
-</p>
-
-<p align="center">
-  <img src="images/2.svg" width="40%">
-</p>
-
-</div>
-
----
-
-## 🔧 Install
-
-```bash
-conda create -n bicor python=3.8
-conda activate bicor
-conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge
-pip install -r requirements.txt
-```
-
 ---
 
 ## 🗂 Prepare Data
@@ -194,6 +170,7 @@ We sincerely thank the open-source community for their contributions.
 I am grateful to Li Xiaoyue from Chengdu University of Technology for her support and help.  
 
 ---
+
 
 
 
