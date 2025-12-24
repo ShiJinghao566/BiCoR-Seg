@@ -180,7 +180,6 @@ If you find this work useful, please consider citing:
   journal = {arXiv preprint arXiv:2512.20255},
   year    = {2025}
 }
----
 
 
 ## 💬 Acknowledgement
@@ -190,6 +189,7 @@ We sincerely thank the open-source community for their contributions.
 I am grateful to Li Xiaoyue from Chengdu University of Technology for her support and help.  
 
 ---
+
 
 
 
