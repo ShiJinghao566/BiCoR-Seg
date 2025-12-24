@@ -65,21 +65,18 @@ BiCoR
 - [LoveDA](https://codalab.lisn.upsaclay.fr/competitions/421)
 - [ISPRS Vaihingen, Potsdam](https://www.isprs.org/education/benchmarks/UrbanSemLab/default.aspx)
 
----
 
 ### Vaihingen
 ```bash
 python tools/vaihingen_patch_split.py --img-dir "data/vaihingen/train_images" --mask-dir "data/vaihingen/train_masks" --output-img-dir "data/vaihingen/train/images_1024" --output-mask-dir "data/vaihingen/train/masks_1024" --mode "train" --split-size 1024 --stride 512
 ```
 
----
 
 ### Potsdam
 ```bash
 python tools/potsdam_patch_split.py --img-dir "data/potsdam/train_images" --mask-dir "data/potsdam/train_masks" --output-img-dir "data/potsdam/train/images_1024" --output-mask-dir "data/potsdam/train/masks_1024" --mode "train" --split-size 1024 --stride 1024 --rgb-image
 ```
 
----
 
 ### LoveDA
 ```bash
@@ -170,6 +167,7 @@ We sincerely thank the open-source community for their contributions.
 I am grateful to Li Xiaoyue from Chengdu University of Technology for her support and help.  
 
 ---
+
 
 
 
