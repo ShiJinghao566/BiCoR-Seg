@@ -7,7 +7,7 @@
 # BiCoR-Seg
 
 📢 **This paper has been accepted by CVM 2026!**
-
+📄 **arXiv:** https://arxiv.org/abs/2512.20255
 **Bidirectional Co-Refinement Framework for High-Resolution Remote Sensing Image Segmentation**
 
 <p align="center">
@@ -167,6 +167,21 @@ It introduces a heatmap-driven bidirectional synergy between feature and class e
 They reveal category activation and spatial attention learned during the bidirectional refinement process.
 
 ---
+## 📖 Citation
+
+**BiCoR-Seg: Bidirectional Co-Refinement Framework for High-Resolution Remote Sensing Image Segmentation**
+
+If you find this work useful, please consider citing:
+
+```bibtex
+@article{shi2025bicorseg,
+  title   = {BiCoR-Seg: Bidirectional Co-Refinement Framework for High-Resolution Remote Sensing Image Segmentation},
+  author  = {Shi, Jinghao and Song, Jianing},
+  journal = {arXiv preprint arXiv:2512.20255},
+  year    = {2025}
+}
+---
+
 
 ## 💬 Acknowledgement
 
@@ -175,6 +190,7 @@ We sincerely thank the open-source community for their contributions.
 I am grateful to Li Xiaoyue from Chengdu University of Technology for her support and help.  
 
 ---
+
 
 
 
