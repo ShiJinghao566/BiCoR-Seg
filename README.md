@@ -6,8 +6,18 @@
 
 # BiCoR-Seg
 
-📢 **This paper has been accepted by CVM 2026!**
-📄 **arXiv:** https://arxiv.org/abs/2512.20255
+📢 **This paper has been accepted by CVM 2026!**  
+
+<p align="center">
+  <a href="https://arxiv.org/abs/2512.20255">
+    <img src="https://img.shields.io/badge/arXiv-2512.20255-b31b1b.svg" alt="arXiv">
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/badge/CVM-2026-blue.svg" alt="CVM 2026">
+  </a>
+</p>
+
+
 **Bidirectional Co-Refinement Framework for High-Resolution Remote Sensing Image Segmentation**
 
 <p align="center">
@@ -180,7 +190,7 @@ If you find this work useful, please consider citing:
   journal = {arXiv preprint arXiv:2512.20255},
   year    = {2025}
 }
-
+```
 
 ## 💬 Acknowledgement
 
@@ -189,6 +199,7 @@ We sincerely thank the open-source community for their contributions.
 I am grateful to Li Xiaoyue from Chengdu University of Technology for her support and help.  
 
 ---
+
 
 
 
